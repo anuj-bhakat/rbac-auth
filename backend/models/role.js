@@ -1,0 +1,17 @@
+import roles from "../configs/roles.json" with { type: "json" };
+
+class Role {
+    constructor() {
+        this.roles = roles.roles;
+    }
+
+    getRoleByName(name) {
+        return this.roles.find((role) => role.name === name);
+    }
+
+    getRoles() {
+        return this.roles;
+    }
+}
+
+export default Role;
