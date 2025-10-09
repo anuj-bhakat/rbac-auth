@@ -150,14 +150,7 @@ const ManagerPage = () => {
       <main className="flex flex-col items-center justify-center py-8 md:py-12 px-4 md:px-6">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">Welcome, Manager!</h2>
 
-        {/* Initialize and Add Buttons */}
         <div className="flex space-x-4 mb-6">
-          <button
-            onClick={() => alert("Implement your Initialize logic here")}
-            className="bg-green-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-green-700 transition"
-          >
-            Initialize Records
-          </button>
           <button
             onClick={handleAddRecord}
             className="bg-indigo-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-indigo-700 transition"

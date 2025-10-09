@@ -18,8 +18,6 @@ const RequireUnauth = ({ isAuthenticated, userRole, children }) => {
     return children;
 };
 
-
-
 const App = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);

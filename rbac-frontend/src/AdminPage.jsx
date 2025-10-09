@@ -39,7 +39,6 @@ const AdminPage = () => {
     }
   };
 
-  // Auto-fetch on mount
   useEffect(() => {
     fetchRecords();
   }, []);
@@ -52,22 +51,6 @@ const AdminPage = () => {
 
   const handleLogout = () => {
     navigate("/logout");
-  };
-
-  // Initialize records (separate API call)
-  const handleInitialize = async () => {
-    setLoading(true);
-    setApiError(null);
-    setApiSuccess(null);
-    try {
-      await axios.get(`${BASE_URL}/records/init`, { withCredentials: true });
-      setApiSuccess("Records initialized successfully.");
-      await fetchRecords();
-    } catch (error) {
-      setApiError("Failed to initialize records.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   // Start editing record
@@ -170,12 +153,12 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <nav className="bg-red-600 text-white p-4 md:px-6 flex justify-between items-center">
+    <div className="min-h-screen bg-blue-50">
+      <nav className="bg-blue-600 text-white p-4 md:px-6 flex justify-between items-center">
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
         <button
           onClick={handleLogout}
-          className="bg-white text-red-600 px-6 py-2 rounded-md hover:bg-gray-200 transition"
+          className="bg-white text-blue-600 px-6 py-2 rounded-md hover:bg-gray-200 transition"
         >
           Logout
         </button>
@@ -183,14 +166,6 @@ const AdminPage = () => {
 
       <main className="flex flex-col items-center justify-start min-h-[calc(100vh-64px)] pt-8 px-4 md:px-6 space-y-6 max-w-6xl mx-auto">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">Welcome, Admin!</h2>
-
-        <button
-          onClick={handleInitialize}
-          className="bg-green-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-green-700 transition mb-4"
-          disabled={loading}
-        >
-          Initialize Records
-        </button>
 
         {/* Add New Record Form */}
         <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mb-6">
@@ -298,18 +273,18 @@ const AdminPage = () => {
               ) : (
                 <>
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">{record.productName}</h3>
-                  <p className="text-green-700 font-semibold text-xl mb-4">₹{record.price}</p>
+                  <p className="text-blue-700 font-semibold text-xl mb-4">₹{record.price}</p>
                   <div className="mt-auto flex space-x-3">
                     <button
                       onClick={() => startEdit(record)}
-                      className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition flex-1"
+                      className="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-600 transition flex-1 cursor-pointer"
                       disabled={loading}
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => deleteRecord(record._id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition flex-1"
+                      className="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-600 transition flex-1 cursor-pointer"
                       disabled={loading}
                     >
                       Delete
@@ -323,18 +298,18 @@ const AdminPage = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center space-x-4 mt-8 w-full max-w-6xl">
+          <div className="flex justify-center items-center space-x-2 mt-8 w-full max-w-6xl">
             <button
               onClick={() => changePage(1)}
               disabled={currentPage === 1}
-              className="bg-red-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
             >
               First
             </button>
             <button
               onClick={() => changePage(currentPage - 1)}
               disabled={currentPage === 1}
-              className="bg-red-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
             >
               Prev
             </button>
@@ -344,14 +319,14 @@ const AdminPage = () => {
             <button
               onClick={() => changePage(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="bg-red-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
             >
               Next
             </button>
             <button
               onClick={() => changePage(totalPages)}
               disabled={currentPage === totalPages}
-              className="bg-red-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md disabled:opacity-50"
             >
               Last
             </button>
