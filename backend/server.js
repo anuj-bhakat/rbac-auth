@@ -4,13 +4,11 @@ import mongoose from 'mongoose';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
 import { Strategy as LocalStrategy } from 'passport-local';
 import expressSession from 'express-session';
 
 import recordsRoutes from './routes/recordsRoute.js';
 import authRoutes from './routes/auth.js';
-
 
 
 dotenv.config();
@@ -26,35 +24,40 @@ mongoose.connect(dbUrl, {})
         process.exit(0);
 });
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     callback(null, true);
-//   },
-//   credentials: true,
-// };
-const corsOptions = {
-  origin: [
-    'http://localhost:5173', // Vite dev server
-    // 'https://rbac-frontend-abc123.vercel.app', 
-    /\.vercel\.app$/ // Allow all Vercel subdomains
-  ],
+const allowedOrigins = [
+  process.env.ALLOWED_ORIGINS_1,
+  process.env.ALLOWED_ORIGINS_2,
+  process.env.ALLOWED_ORIGINS_3,
+  process.env.ALLOWED_ORIGINS_4
+].filter(Boolean);
+
+
+app.use(cors({
+  origin: (origin, callback) => {
+    console.log('Origin:', origin);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
-};
+}));
 
-
-app.use(cors(corsOptions));
 
 const sessionOption = {
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production', // HTTPS in production
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  proxy: process.env.NODE_ENV === 'production', // trust proxy if behind Vercel/Netlify
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // only HTTPS in prod
+    httpOnly: true, // prevents client JS from accessing the cookie
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
 };
 
 app.use(express.urlencoded({ extended: true }));
