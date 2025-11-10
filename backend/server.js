@@ -26,11 +26,21 @@ mongoose.connect(dbUrl, {})
         process.exit(0);
 });
 
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     callback(null, true);
+//   },
+//   credentials: true,
+// };
 const corsOptions = {
-  origin: (origin, callback) => {
-    callback(null, true);
-  },
+  origin: [
+    'http://localhost:5173', // Vite dev server
+    // 'https://rbac-frontend-abc123.vercel.app', 
+    /\.vercel\.app$/ // Allow all Vercel subdomains
+  ],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 
@@ -40,6 +50,11 @@ const sessionOption = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // HTTPS in production
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 };
 
 app.use(express.urlencoded({ extended: true }));
