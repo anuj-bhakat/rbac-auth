@@ -2,8 +2,8 @@ import Permissions from '../models/permissions.js';
 
 export const checkPermission = (permission) => {
   return (req, res, next) => {
-    console.log(req);
     const userRole = req.user ? req.user.role : 'anonymous';
+    // console.log(req);
     console.log(userRole);
     const userPermissions = new Permissions().getPermissionsByRoleName(userRole);
 

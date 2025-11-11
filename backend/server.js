@@ -34,7 +34,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    console.log('Origin:', origin);
+    console.log('[CORS] Origin check:', origin); 
     if (!origin) return callback(null, true);
     if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
       return callback(null, true);
@@ -46,17 +46,19 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 const sessionOption = {
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  proxy: process.env.NODE_ENV === 'production', // trust proxy if behind Vercel/Netlify
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // only HTTPS in prod
-    httpOnly: true, // prevents client JS from accessing the cookie
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
+    maxAge: 1000 * 60 * 60 * 24
   }
 };
 
@@ -64,8 +66,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressSession(sessionOption));
 
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Cookies:', req.headers.cookie);
+  next();
+});
+
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session()); 
+
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
