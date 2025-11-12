@@ -59,7 +59,13 @@ const sessionOption = {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 24,
+    // Add domain for better cookie handling
+    ...(process.env.NODE_ENV === 'production' && {
+      domain: process.env.COOKIE_DOMAIN || undefined
+    }),
+    name: 'connect.sid',
+    proxy: process.env.NODE_ENV === 'production'
   }
 };
 
