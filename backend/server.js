@@ -71,6 +71,7 @@ app.use(expressSession(sessionOption));
 app.use((req, res, next) => {
   console.log('Session ID:', req.sessionID);
   console.log('Cookies:', req.headers.cookie);
+  console.log('Environment:', process.env.NODE_ENV);
   next();
 });
 
