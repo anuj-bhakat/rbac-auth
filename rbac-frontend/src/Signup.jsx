@@ -9,6 +9,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null); // Reference to the dropdown
   const navigate = useNavigate();
 
@@ -34,6 +35,7 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
+    setLoading(true);
 
     const user = { username, password, role };
 
@@ -52,6 +54,8 @@ const Signup = () => {
       }
     } catch (err) {
       setError(err?.response?.data?.error || 'An unknown error occurred. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,6 +89,7 @@ const Signup = () => {
               placeholder="Enter your username"
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300"
+              disabled={loading}
             />
           </div>
 
@@ -100,6 +105,7 @@ const Signup = () => {
               placeholder="Enter your password"
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-300"
+              disabled={loading}
             />
           </div>
 
@@ -111,7 +117,8 @@ const Signup = () => {
             <button
               type="button"
               className="w-full px-4 py-3 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent flex justify-between items-center"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={() => !loading && setIsDropdownOpen(!isDropdownOpen)}
+              disabled={loading}
             >
               {role.charAt(0).toUpperCase() + role.slice(1)}
               <svg
@@ -131,7 +138,7 @@ const Signup = () => {
                 />
               </svg>
             </button>
-            
+
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div className="absolute w-full bg-white border border-gray-300 rounded-md mt-2 shadow-lg z-10">
@@ -155,9 +162,20 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-md transition duration-300 hover:scale-105"
+            disabled={loading}
+            className={`w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-md transition duration-300 hover:scale-105 flex justify-center items-center space-x-2 ${loading ? 'opacity-70 cursor-not-allowed hover:scale-100' : ''}`}
           >
-            Register
+            {loading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Signing up...</span>
+              </>
+            ) : (
+              <span>Register</span>
+            )}
           </button>
         </form>
 

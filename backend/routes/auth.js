@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', registerUser);
 
-router.post('/login', 
+router.post('/login',
     passport.authenticate('local', {
         successMessage: 'loggedIn',
         failureMessage: 'failed',
