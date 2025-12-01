@@ -16,13 +16,13 @@ const app = express();
 
 const dbUrl = process.env.DB_URL;
 mongoose.connect(dbUrl, {})
-    .then(() => {
-        console.log('MongoDB is connected.');
-    })
-    .catch(err => {
-        console.log(err);
-        process.exit(0);
-});
+  .then(() => {
+    console.log('MongoDB is connected.');
+  })
+  .catch(err => {
+    console.log(err);
+    process.exit(0);
+  });
 
 const allowedOrigins = [
   process.env.ALLOWED_ORIGINS_1,
@@ -34,7 +34,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    console.log('[CORS] Origin check:', origin); 
+    console.log('[CORS] Origin check:', origin);
     if (!origin) return callback(null, true);
     if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
       return callback(null, true);
@@ -59,8 +59,7 @@ const sessionOption = {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 1000 * 60 * 60 * 24,
-    domain: process.env.COOKIE_DOMAIN || undefined // Add domain support
+    maxAge: 1000 * 60 * 60 * 24
   }
 };
 
@@ -76,7 +75,7 @@ app.use((req, res, next) => {
 });
 
 app.use(passport.initialize());
-app.use(passport.session()); 
+app.use(passport.session());
 
 
 passport.use(new LocalStrategy(User.authenticate()));
